@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="app_name">JaDX</string>
+		
+	<string name="select_input">Select input file</string>
+	<string name="select_output">Select output directory</string>
+	<string name="decompile">Decompile</string>
+	<string name="decompiling">Decompiling...</string>
+	<string name="wait">Please wait...</string>
+	<string name="decompile_complete">Decompile succesfully complete!</string>
+	<string name="empty">Empty</string>
+	<string name="info">Information</string>
+	<string name="description">This is a adapted version JaDX (https://github.com/skylot/jadx) for Android. Also this program used FileDialog library (http://code.google.com/p/android-file-dialog/)
+        <u>Decompile:</u>.\n
+        <i>DEX</i>\n 
+        <i>APK</i>\n
+		<i>JAR</i>\n
+		<i>CLASS</i>\n
+        <b>© NaikSoftware</b>
+    </string>
+
+	
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Error</string>
+</resources>

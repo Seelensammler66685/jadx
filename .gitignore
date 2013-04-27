@@ -1,17 +1,16 @@
 .classpath
 .project
+.properties
 .settings/
 
 bin/
-target/
-build/
-idea/
-.gradle/
+private/
+gen/
 
 *.dex
-*.jar
 *.class
 *.dump
 *.log
 *.cfg
+*.txt
 

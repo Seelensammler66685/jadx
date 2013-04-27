@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+		
+	<string name="select_input">Что декомпилировать?</string>
+	<string name="select_output">Куда складывать?</string>
+	<string name="decompile">Начать декомпиляцию</string>
+	<string name="decompiling">Декомпиляция</string>
+	<string name="wait">Пожалуйста подождите...</string>
+	<string name="decompile_complete">Декомпиляция прошла успешно!</string>
+	<string name="empty">Не выбрано</string>
+	<string name="info">Информация</string>
+    <string name="description">Это адаптированная версия JaDX (https://github.com/skylot/jadx) для Android. Также эта программа использует библиотеку FileDialog (http://code.google.com/p/android-file-dialog/)
+        <u>Декомпилирует:</u>.\n
+        <i>DEX</i>\n 
+        <i>APK</i>\n
+		<i>JAR</i>\n
+		<i>CLASS</i>\n
+        <b>© NaikSoftware</b>
+    </string>
+		
+    <string name="location">Путь</string>
+    <string name="cant_read_folder">нельзя открыть директорию!</string>
+    <string name="nnew">Новый</string>
+    <string name="select">Выбрать</string>
+    <string name="file_name">Имя файла:</string>
+    <string name="cancel">Отмена</string>
+    <string name="create">Сохранить</string>
+    <string name="no_data">Нет данных</string>
+    <color name="gray">#ffff0000</color>
+    <string name="err">Ошибка</string>
+</resources>
