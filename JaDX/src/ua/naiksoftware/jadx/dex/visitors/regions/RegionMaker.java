@@ -224,9 +224,9 @@ public class RegionMaker {
                 }
             }
         }
-
         BlockNode bThen = BlockUtils.getBlockByOffset(ifnode.getTarget(), condBlock.getSuccessors());
         BlockNode out;
+
         if (loopRegion.isConditionAtEnd()) {
             BlockNode bElse = BlockUtils.selectOther(bThen, condBlock.getSuccessors());
             out = (bThen == loopStart ? bElse : bThen);
@@ -258,6 +258,7 @@ public class RegionMaker {
             stack.addExit(out);
             loopRegion.setBody(makeRegion(loopBody, stack));
         }
+
         stack.pop();
         return out;
     }
