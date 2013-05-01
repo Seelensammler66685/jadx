@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 	private String strInput, strOutput;
 	private static final int SELECT_INPUT = 0x1;
 	private static final int SELECT_OUTPUT = 0x2;
+	public static Decompiler decompiler;
 	private SharedPreferences prefs;
 
     /**
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		decompiler = new Decompiler(this);
         setContentView(R.layout.main);
 		inputTw = (TextView) findViewById(R.id.text_input);
 		outputTw = (TextView) findViewById(R.id.text_output);
@@ -59,7 +61,7 @@ public class MainActivity extends Activity {
      * @param v Button launch
      */
     public void decompile(View v) {
-        new Decompiler(this).execute(strInput, strOutput);
+        decompiler.execute(strInput, strOutput);
     }
 
 	public void selectInput(View v) {

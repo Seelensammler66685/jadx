@@ -1,6 +1,5 @@
 package jadx;
 
-import android.util.Log;
 import jadx.codegen.CodeGen;
 import jadx.dex.info.ClassInfo;
 import jadx.dex.nodes.ClassNode;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import ua.naiksoftware.jadx.*;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
@@ -38,10 +38,10 @@ public class Main {
 
     static {
         if (Consts.DEBUG) {
-            Log.i(tag, "debug enabled");
+            MainActivity.decompiler.update(tag, "debug enabled", Level.INFO);
         }
         if (Main.class.desiredAssertionStatus()) {
-            Log.i(tag, "assertions enabled");
+            MainActivity.decompiler.update(tag, "assertions enabled", Level.INFO);
         }
     }
 
@@ -49,13 +49,13 @@ public class Main {
         int errorCount;
         try {
             RootNode root = new RootNode(args);
-            Log.i(tag, "loading ...");
+            MainActivity.decompiler.update(tag, "loading ...", Level.INFO);
             root.load();
-            Log.i(tag, "processing ...");
+            MainActivity.decompiler.update(tag, "processing ...", Level.INFO);
             root.init();
 
             int threadsCount = args.getThreadsCount();
-            Log.d(tag, "processing threads count: {}" + threadsCount);
+            MainActivity.decompiler.update(tag, "processing threads count: {}" + threadsCount, Level.DEBUG);
 
             List<IDexTreeVisitor> passes = getPassesList(args);
             if (threadsCount == 1) {
@@ -73,7 +73,7 @@ public class Main {
                 executor.awaitTermination(100, TimeUnit.DAYS);
             }
         } catch (Throwable e) {
-            Log.e(tag, "jadx error:", e);
+            MainActivity.decompiler.update(tag, "jadx error: " + e.getMessage(), Level.ERROR);
         } finally {
             errorCount = ErrorsCounter.getErrorCount();
             if (errorCount != 0) {
@@ -84,7 +84,7 @@ public class Main {
             ClassInfo.clearCache();
             ErrorsCounter.reset();
         }
-        Log.i(tag, "done");
+        MainActivity.decompiler.update(tag, "done", Level.INFO);
         return errorCount;
     }
 
@@ -137,7 +137,7 @@ public class Main {
                 //System.exit(0);
             }
         } catch (JadxException e) {
-            Log.e(tag, "Error: " + e.getMessage());
+            MainActivity.decompiler.update(tag, "Error: " + e.getMessage(), Level.ERROR);
             //System.exit(1);
         }
 

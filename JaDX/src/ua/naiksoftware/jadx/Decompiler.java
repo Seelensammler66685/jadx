@@ -4,20 +4,47 @@ import android.app.ProgressDialog;
 import android.content.*;
 import android.os.*;
 import android.widget.*;
+import android.app.AlertDialog;
+import android.view.View;
+import android.view.LayoutInflater;
+import android.text.Html;
+import android.util.Log;
 
+/**
+ * Wait dialog
+ */
 public class Decompiler extends AsyncTask<String, String, Boolean> {
 
+    private static final String tag = "Decompiler";
     private Context context;
-    private ProgressDialog dialog;
+    private AlertDialog dialog;
+	private View dialogView;
+	private TextView tvConsole;
+	private StringBuilder logBuilder;
 
     public Decompiler(Context context) {
         this.context = context;
+		dialogView = LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null);
+		tvConsole = (TextView) dialogView.findViewById(R.id.tvConsole);
+		logBuilder = new StringBuilder();
     }
 
-    //update progress in feature
-    public void update(int add) {
-        //Log.d(tag, "update: " + add);
-        //publishProgress(String.valueOf(add));
+    //update progress
+    public void update(String where, String add, Level level) {
+        //Log.e(tag, "update: " + add);
+		String color = null;
+		switch (level) {
+			case INFO: color = "<font color=\"white\">";
+				break;
+			case DEBUG: color = "<font color=\"blue\">";
+				break;
+			case WARNING: color = "<font color=\"orange\">";
+				break;
+			case ERROR: color = "<font color=\"red\">";
+				break;
+		}
+		logBuilder.append(color).append(add).append("</font><\\br>");
+        publishProgress(logBuilder.toString());
     }
 
     @Override
@@ -30,26 +57,25 @@ public class Decompiler extends AsyncTask<String, String, Boolean> {
         return true;
     }
 
-    //@Override
-    //public void onProgressUpdate(String... s) {
-    //    dialog.incrementProgressBy(Integer.parseInt(s[0]));
-    //}
-    
     @Override
-    public void onPreExecute() {
-        //Log.i(tag, "onPreExecute");
-        dialog = new ProgressDialog(context);
-        dialog.setIndeterminate(true);
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setCancelable(false);
-        dialog.setTitle(R.string.decompiling);
-        dialog.setMessage(context.getResources().getString(R.string.wait));
-        dialog.show();
+    public void onProgressUpdate(String... s) {
+        tvConsole.setText(Html.fromHtml(s[0]));
     }
 
     @Override
+    public void onPreExecute() {
+        //Log.e(tag, "onPreExecute");
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        //dialog.setTitle(R.string.decompiling);
+        builder.setView(dialogView);
+		dialog = builder.create();
+        dialog.show();
+    }
+	
+    @Override
     public void onPostExecute(Boolean result) {
-        //Log.i("Installator", "onPostExecute with: " + result);
+        //Log.e("Installator", "onPostExecute with: " + result);
         if (result) {
             dialog.dismiss();
             Toast t = Toast.makeText(context, context.getResources().getString(R.string.decompile_complete), Toast.LENGTH_LONG);
@@ -59,6 +85,6 @@ public class Decompiler extends AsyncTask<String, String, Boolean> {
             Toast t = Toast.makeText(context, "Err in Decompiler", Toast.LENGTH_LONG);
             t.show();
         }
-        //Log.d(tag, "Installator", "onPostExecuted");
+        //Log.e(tag, "onPostExecuted");
     }
 }
