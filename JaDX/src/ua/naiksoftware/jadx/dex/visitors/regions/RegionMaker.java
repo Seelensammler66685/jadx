@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class RegionMaker {
 
-    private final String tag = getClass().getName();
+    private static final String tag = "RegionMaker";
     private final MethodNode mth;
 
     public RegionMaker(MethodNode mth) {
@@ -122,18 +122,20 @@ public class RegionMaker {
         IfNode ifnode = null;
         LoopRegion loopRegion = null;
         Set<BlockNode> exitBlocksSet = loop.getExitNodes();
-		
+
         // set exit blocks scan order by priority
         // this can help if loop have several exits (after using 'break' or 'return' in loop)
         List<BlockNode> exitBlocks = new ArrayList<BlockNode>(exitBlocksSet.size());
-        BlockNode nextStart = BlockUtils.getNextBlock(loopStart); 
-        if (nextStart != null && exitBlocksSet.remove(nextStart)) 
-            exitBlocks.add(nextStart); 
-        if (exitBlocksSet.remove(loop.getEnd()))
-            exitBlocks.add(loop.getEnd();
+        BlockNode nextStart = BlockUtils.getNextBlock(loopStart);
+        if (nextStart != null && exitBlocksSet.remove(nextStart)) {
+            exitBlocks.add(nextStart);
         }
-		if (exitBlocksSet.remove(loopStart)) 
+        if (exitBlocksSet.remove(loop.getEnd())) {
+            exitBlocks.add(loop.getEnd());
+        }
+        if (exitBlocksSet.remove(loopStart)) {
             exitBlocks.add(loopStart);
+        }
         exitBlocks.addAll(exitBlocksSet);
         exitBlocksSet = null;
 
@@ -191,11 +193,12 @@ public class RegionMaker {
             stack.pop();
             loopStart.getAttributes().add(loop);
 
-            BlockNode next = BlockUtils.getNextBlock(loop.getEnd()); 
-            if (!RegionUtils.isRegionContainsBlock(body, next)) 
-                return next; 
-            else 
+            BlockNode next = BlockUtils.getNextBlock(loop.getEnd());
+            if (!RegionUtils.isRegionContainsBlock(body, next)) {
+                return next;
+            } else {
                 return null;
+            }
         }
 
         stack.push(loopRegion);
@@ -229,9 +232,9 @@ public class RegionMaker {
                 }
             }
         }
+
         BlockNode bThen = BlockUtils.getBlockByOffset(ifnode.getTarget(), condBlock.getSuccessors());
         BlockNode out;
-
         if (loopRegion.isConditionAtEnd()) {
             BlockNode bElse = BlockUtils.selectOther(bThen, condBlock.getSuccessors());
             out = (bThen == loopStart ? bElse : bThen);
@@ -263,7 +266,6 @@ public class RegionMaker {
             stack.addExit(out);
             loopRegion.setBody(makeRegion(loopBody, stack));
         }
-
         stack.pop();
         return out;
     }
@@ -384,10 +386,11 @@ public class RegionMaker {
                 }
             }
         }
+
         if (BlockUtils.isBackEdge(block, out)) {
             out = null;
         }
-		
+
         if (stack.containsExit(elseBlock)) {
             elseBlock = null;
         }
