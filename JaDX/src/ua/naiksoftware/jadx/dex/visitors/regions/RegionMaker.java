@@ -122,17 +122,18 @@ public class RegionMaker {
         IfNode ifnode = null;
         LoopRegion loopRegion = null;
         Set<BlockNode> exitBlocksSet = loop.getExitNodes();
+		
         // set exit blocks scan order by priority
-        // this can help if we have several exit from loop (after using 'break' or 'return' in loop)
+        // this can help if loop have several exits (after using 'break' or 'return' in loop)
         List<BlockNode> exitBlocks = new ArrayList<BlockNode>(exitBlocksSet.size());
-        if (exitBlocksSet.contains(loop.getEnd())) {
-            exitBlocks.add(loop.getEnd());
-            exitBlocksSet.remove(loop.getEnd());
+        BlockNode nextStart = BlockUtils.getNextBlock(loopStart); 
+        if (nextStart != null && exitBlocksSet.remove(nextStart)) 
+            exitBlocks.add(nextStart); 
+        if (exitBlocksSet.remove(loop.getEnd()))
+            exitBlocks.add(loop.getEnd();
         }
-        if (exitBlocksSet.contains(loopStart)) {
+		if (exitBlocksSet.remove(loopStart)) 
             exitBlocks.add(loopStart);
-            exitBlocksSet.remove(loopStart);
-        }
         exitBlocks.addAll(exitBlocksSet);
         exitBlocksSet = null;
 
@@ -190,7 +191,11 @@ public class RegionMaker {
             stack.pop();
             loopStart.getAttributes().add(loop);
 
-            return BlockUtils.getNextBlock(loop.getEnd());
+            BlockNode next = BlockUtils.getNextBlock(loop.getEnd()); 
+            if (!RegionUtils.isRegionContainsBlock(body, next)) 
+                return next; 
+            else 
+                return null;
         }
 
         stack.push(loopRegion);
@@ -379,7 +384,10 @@ public class RegionMaker {
                 }
             }
         }
-
+        if (BlockUtils.isBackEdge(block, out)) {
+            out = null;
+        }
+		
         if (stack.containsExit(elseBlock)) {
             elseBlock = null;
         }
