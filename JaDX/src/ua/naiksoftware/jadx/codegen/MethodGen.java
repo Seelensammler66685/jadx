@@ -21,12 +21,9 @@ import jadx.utils.Utils;
 import jadx.utils.exceptions.CodegenException;
 import jadx.utils.exceptions.DecodeException;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 //import org.slf4j.Logger;
@@ -38,11 +35,11 @@ public class MethodGen {
 	private final String tag = getClass().getName();
 
 	private final MethodNode mth;
-	private final Set<String> mthArgsDecls;
-	private final Map<String, ArgType> varDecls = new HashMap<String, ArgType>();
 	private final ClassGen classGen;
 	private final boolean fallback;
 	private final AnnotationGen annotationGen;
+	
+    private final Set<String> varNames = new HashSet<String>();
 
 	public MethodGen(ClassGen classGen, MethodNode mth) {
 		this.mth = mth;
@@ -51,9 +48,8 @@ public class MethodGen {
 		this.annotationGen = classGen.getAnnotationGen();
 
 		List<RegisterArg> args = mth.getArguments(true);
-		mthArgsDecls = new HashSet<String>(args.size());
 		for (RegisterArg arg : args) {
-			mthArgsDecls.add(makeArgName(arg));
+			varNames.add(makeArgName(arg));
 		}
 	}
 
@@ -184,27 +180,33 @@ public class MethodGen {
 	 */
 	public String assignArg(RegisterArg arg) {
 		String name = makeArgName(arg);
-		if (!mthArgsDecls.contains(name))
-			varDecls.put(name, arg.getType());
+		if (varNames.add(name)) 
+            return name; 
+   
+        if (fallback) 
+            return name; 
+   
+        name = getUniqVarName(name); 
+        arg.getTypedVar().setName(name);
 		return name;
 	}
 
+	private String getUniqVarName(String name) { 
+        String r; 
+        int i = 2; 
+        do { 
+          r = name + i; 
+          i++; 
+        } while (varNames.contains(r)); 
+        varNames.add(r); 
+        return r; 
+    } 
+  
 	private void makeInitCode(CodeWriter code) throws CodegenException {
 		InsnGen igen = new InsnGen(this, mth, fallback);
 		// generate super call
 		if (mth.getSuperCall() != null)
 			igen.makeInsn(mth.getSuperCall(), code);
-	}
-
-	public void makeVariablesDeclaration(CodeWriter code) {
-		for (Entry<String, ArgType> var : varDecls.entrySet()) {
-			code.startLine(TypeGen.translate(classGen, var.getValue()));
-			code.add(" ");
-			code.add(var.getKey());
-			code.add(";");
-		}
-		if (!varDecls.isEmpty())
-			code.endl();
 	}
 
 	public CodeWriter makeInstructions(int mthIndent) throws CodegenException {
@@ -243,7 +245,6 @@ public class MethodGen {
 				(new RegionGen(this, mth)).makeRegion(insns, mth.getRegion());
 
 				makeInitCode(code);
-				makeVariablesDeclaration(code);
 				code.add(insns);
 			} else {
 				makeFallbackMethod(code, mth);

@@ -102,7 +102,7 @@ public class InsnGen {
 	}
 
 	public String declareVar(RegisterArg arg) throws CodegenException {
-		return useType(arg.getType()) + " " + arg(arg);
+		return useType(arg.getType()) + " " + mgen.assignArg(arg);
 	}
 
 	private String lit(LiteralArg arg) {
